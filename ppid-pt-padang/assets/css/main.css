@@ -360,13 +360,13 @@ margin-bottom: 30px;
     margin: 0 auto;
 }
 
-.profile-content {
-    display: grid;
-    width: 100%;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-bottom: 50px;
-}
+    .profile-content {
+        display:flex;
+        width: 100%;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 50px;
+    }
 
 .content-section {
     background: #dff2d8;
@@ -389,7 +389,7 @@ margin-bottom: 30px;
 }
 
 .highlight-box {
-    background-color: #dff2d8;
+    background-color: #fff;
     color: white;
     padding: 25px;
     border-radius: 10px;
@@ -461,7 +461,7 @@ margin-bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  height: 480px;
+  height: 780px;
   background: #c41e3a;
 }
 
