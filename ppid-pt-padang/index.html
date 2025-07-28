@@ -9,29 +9,135 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const counters = document.querySelectorAll('.stat-number');
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
 
-    counters.forEach(counter => {
-      const updateCount = () => {
-        const target = +counter.getAttribute('data-target');
-        const current = +counter.innerText;
-
-        const increment = Math.ceil(target / 100); // kecepatan naik
-
-        if (current < target) {
-          counter.innerText = current + increment;
-          setTimeout(updateCount, 20); // delay antar update
-        } else {
-          counter.innerText = target;
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Hamburger clicked!'); // Debug log
+                
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                
+                console.log('Nav menu classes:', navMenu.className); // Debug log
+            });
         }
-      };
 
-      updateCount();
+        // Close mobile menu when clicking on regular nav links (not dropdown toggles)
+        const regularNavLinks = document.querySelectorAll('.nav-link:not(.dropdown-toggle)');
+        regularNavLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                console.log('Regular nav link clicked'); // Debug log
+                if (hamburger && navMenu) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+        });
+
+        // Handle dropdown menus
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            const toggle = dropdown.querySelector('.dropdown-toggle');
+            
+            if (toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('Dropdown toggle clicked'); // Debug log
+                    
+                    // Close other dropdowns first
+                    dropdowns.forEach(otherDropdown => {
+                        if (otherDropdown !== dropdown) {
+                            otherDropdown.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current dropdown
+                    dropdown.classList.toggle('active');
+                    console.log('Dropdown classes:', dropdown.className); // Debug log
+                });
+            }
+        });
+
+        // Close dropdowns when clicking on dropdown links
+        const dropdownLinks = document.querySelectorAll('.dropdown-menu a');
+        dropdownLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                console.log('Dropdown link clicked'); // Debug log
+                
+                // Close all dropdowns
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+                
+                // On mobile, also close the main menu
+                if (window.innerWidth <= 768) {
+                    if (hamburger && navMenu) {
+                        hamburger.classList.remove('active');
+                        navMenu.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Close mobile menu and dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            console.log('Document clicked'); // Debug log
+            
+            // Check if click is outside nav menu
+            if (hamburger && navMenu && 
+                !hamburger.contains(e.target) && 
+                !navMenu.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+
+            // Check if click is outside any dropdown
+            let clickedInsideDropdown = false;
+            dropdowns.forEach(dropdown => {
+                if (dropdown.contains(e.target)) {
+                    clickedInsideDropdown = true;
+                }
+            });
+            
+            if (!clickedInsideDropdown) {
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            console.log('Window resized to:', window.innerWidth); // Debug log
+            
+            if (window.innerWidth > 768) {
+                // Reset mobile menu state on desktop
+                if (hamburger && navMenu) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+                
+                // Reset dropdown states
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
+
+        // Debug: Check if elements exist
+        console.log('Hamburger found:', !!hamburger);
+        console.log('Nav menu found:', !!navMenu);
+        console.log('Dropdowns found:', dropdowns.length);
     });
-  });
-</script>
+    </script>
 
 <body>
     <!-- Header -->
@@ -39,55 +145,47 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <img src="assets/img/logo-ppid.png" alt="Logo Pengadilan Tinggi Padang">
-                    <div class="logo-text">
-                    </div>
+                    <img src="../assets/img/logo-ppid.png" alt="Logo Pengadilan Tinggi Padang">
                 </div>
                 <nav class="navbar">
-                <ul class="nav-menu">
-                    <li><a href="index.html" class="nav-link active">Beranda</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle">Profil <i class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="Profil/profil-ppid.html">Profil PPID</a></li>
-                            <li><a href="Profil/tugas-fungsi-ppid.html">Tugas dan Fungsi PPID</a></li>
-                            <li><a href="Profil/struktur-organisasi.html">Struktur PPID</a></li>
-                            <li><a href="Profil/visi-misi.html">Visi dan Misi</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a href="regulasi.html">Regulasi</a></li>
-
-                    <li class="dropdown">
-                        <a href="#" class="nav-link dropdown-toggle">Informasi Publik<i class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="Informasi/informasi-berkala.html">Informasi Berkala</a></li>
-                            <li><a href="Informasi/informasi-serta-merta.html">Informasi Serta Merta</a></li>
-                            <li><a href="Informasi/informasi-tersedia-setiap-saat.html">Informasi Tersedia Setiap Saat</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="dropdown">
-                        <a href="#" class="nav-link dropdown-toggle">Standar Pelayanan<i class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="Standar-Pelayanan/maklumat-pelayanan.html">Maklumat Pelayanan</a></li>
-                            <li><a href="Standar-Pelayanan/prosedur-permohonan-informasi.html">Prosedur Permohonan Informasi</a></li>
-                            <li><a href="Standar-Pelayanan/prosedur-pengajuan-keberatan.html">Prosedur Pengajuan Keberatan</a></li>
-                            <li><a href="Standar-Pelayanan/prosedur-sengketa-informasi.html">Prosedur Sengketa Informasi</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="dropdown">
-                        <a href="#" class="nav-link dropdown-toggle">Laporan<i class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="Laporan/laporan.html">Laporan Pelayanan Informasi</a></li>
-                            <li><a href="Laporan/statistik-perkara.html">Statistik Perkara</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a href="https://forms.gle/1EAKrnagVDzvzYMT7" class="nav-link">Pelayanan Informasi</a></li>
-                </ul>
-
+                    <ul class="nav-menu">
+                        <li><a href="../index.html" class="nav-link active">Beranda</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle">Profil <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/Profil/profil-ppid.html">Profil PPID</a></li>
+                                <li><a href="/Profil/tugas-fungsi-ppid.html" class="active">Tugas dan Fungsi PPID</a></li>
+                                <li><a href="/Profil/struktur-organisasi.html">Struktur PPID</a></li>
+                                <li><a href="/Profil/visi-misi.html">Visi dan Misi</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="../regulasi.html" class="nav-link">Regulasi</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle">Informasi Publik <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/Informasi/informasi-berkala.html">Informasi Berkala</a></li>
+                                <li><a href="/Informasi/informasi-serta-merta.html">Informasi Serta Merta</a></li>
+                                <li><a href="/Informasi/informasi-tersedia-setiap-saat.html">Informasi Tersedia Setiap Saat</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle">Standar Pelayanan <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/Standar-Pelayanan/maklumat-pelayanan.html">Maklumat Pelayanan</a></li>
+                                <li><a href="/Standar-Pelayanan/prosedur-permohonan-informasi.html">Prosedur Permohonan Informasi</a></li>
+                                <li><a href="/Standar-Pelayanan/prosedur-pengajuan-keberatan.html">Prosedur Pengajuan Keberatan</a></li>
+                                <li><a href="/Standar-Pelayanan/prosedur-sengketa-informasi.html">Prosedur Sengketa Informasi</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle">Laporan <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/Laporan/laporan.html">Laporan Pelayanan Informasi</a></li>
+                                <li><a href="/Laporan/statistik-perkara.html">Statistik Perkara</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="https://forms.gle/iSkrtQWRnZQRRYxC8" class="nav-link">Pelayanan Informasi</a></li>
+                    </ul>
                     <div class="hamburger">
                         <span></span>
                         <span></span>
@@ -345,81 +443,5 @@
     <button class="scroll-top" id="scrollTop">
         <i class="fas fa-chevron-up"></i>
     </button>
-
-    <script>
-        // Mobile menu toggle
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
-
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        // Header scroll effect
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Animated counters
-        const observerOptions = {
-            threshold: 0.7
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const counters = entry.target.querySelectorAll('.stat-number');
-                    counters.forEach(counter => {
-                        const target = parseInt(counter.getAttribute('data-target'));
-                        const increment = target / 100;
-                        let current = 0;
-                        
-                        const timer = setInterval(() => {
-                            current += increment;
-                            counter.textContent = Math.floor(current);
-                            
-                            if (current >= target) {
-                                counter.textContent = target;
-                                clearInterval(timer);
-                            }
-                        }, 30);
-                    });
-                }
-            });
-        }, observerOptions);
-
-        observer.observe(document.querySelector('.stats'));
-
-        // Scroll to top functionality
-        const scrollTopBtn = document.getElementById('scrollTop');
-        
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollTopBtn.classList.add('show');
-            } else {
-                scrollTopBtn.classList.remove('show');
-            }
-        });
-
-        scrollTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Form submission
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Terima kasih! Pesan Anda telah dikirim.');
-            this.reset();
-        });
-    </script>
 </body>
 </html>
